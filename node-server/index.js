@@ -20,7 +20,7 @@ const io = require("socket.io")(server, {
 });
 
 io.sockets.on("connection", (socket) => {
-  console.log("Made socket connection ", socket.id);
+  // console.log("Made socket connection ", socket.id);
 
   // Handle user disconnect event
   socket.on("disconnect", function () {
@@ -28,8 +28,7 @@ io.sockets.on("connection", (socket) => {
       return String(element.socketId) === socket.id;
     });
 
-    // console.log(entry);
-    console.log(socket.id + " Got disconnected!");
+    // console.log(socket.id + " Got disconnected!");
 
     online = online.filter(function (x) {
       return x.socketId !== socket.id;

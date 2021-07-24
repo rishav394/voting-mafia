@@ -1,9 +1,15 @@
-import { Component } from "react";
+import { Component, createRef } from "react";
 import { withCookies } from "react-cookie";
 import { socket } from "./socket";
 import { User } from "./User";
 
 class Main extends Component {
+  scrollRefs = {
+    Mafia: createRef(),
+    Healer: createRef(),
+    Detective: createRef(),
+  };
+
   constructor(props) {
     super(props);
 
@@ -42,9 +48,16 @@ class Main extends Component {
         this.state.me?.socketId &&
         forSockets.includes(this.state.me.socketId)
       ) {
-        this.setState({
-          messages: [...this.state.messages, { from, message, channel }],
-        });
+        this.setState(
+          {
+            messages: [...this.state.messages, { from, message, channel }],
+          },
+          () => {
+            this.scrollRefs[channel].current.scrollIntoView({
+              behavior: "smooth",
+            });
+          }
+        );
       }
     });
   }
@@ -224,6 +237,7 @@ class Main extends Component {
                         }
                       }
                     )}
+                    <div ref={this.scrollRefs[toRole]} />
                     <input
                       style={{
                         position: "absolute",
@@ -235,11 +249,13 @@ class Main extends Component {
                       onKeyPress={(e) => {
                         if (e.key === "Enter") {
                           const msg = e.target.value;
-                          socket.emit("message", {
-                            message: msg,
-                            toRole: toRole,
-                          });
-                          e.target.value = "";
+                          if (msg) {
+                            socket.emit("message", {
+                              message: msg,
+                              toRole: toRole,
+                            });
+                            e.target.value = "";
+                          }
                         }
                       }}
                     />
