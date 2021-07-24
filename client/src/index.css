@@ -41,3 +41,7 @@ div.chat-box {
   overflow: scroll;
   height: 65%;
 }
+
+div.col-sm-9 {
+  margin: auto;
+}

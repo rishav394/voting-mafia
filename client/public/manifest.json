@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Voting Mafia",
+  "name": "Voting Mafia",
   "icons": [
     {
       "src": "favicon.ico",

@@ -66,7 +66,7 @@ class Main extends Component {
               });
             }}
             onKeyPress={(e) => {
-              if (e.code === "Enter") {
+              if (e.key === "Enter") {
                 if (this.state.name) {
                   this.props.cookies.set("name", this.state.name);
                   socket.disconnect();
@@ -167,6 +167,7 @@ class Main extends Component {
                       {votedUsers.length +
                         "/" +
                         this.state.users.length +
+                        "  " +
                         votedUsers.join(" , ")}
                     </p>
                   )}
@@ -189,7 +190,12 @@ class Main extends Component {
               this.state.me?.role === "god"
             ) {
               return (
-                <div className="chat-window col-4" key={toRole}>
+                <div
+                  className={`chat-window ${
+                    this.state.me?.role === "god" ? "col-4" : "col-sm-9"
+                  }`}
+                  key={toRole}
+                >
                   <h4>{toRole}</h4>
                   <div className="chat-box">
                     {this.state.messages.map(
@@ -227,7 +233,7 @@ class Main extends Component {
                       className="form-control"
                       type="text"
                       onKeyPress={(e) => {
-                        if (e.code === "Enter") {
+                        if (e.key === "Enter") {
                           const msg = e.target.value;
                           socket.emit("message", {
                             message: msg,
