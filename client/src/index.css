@@ -1,0 +1,43 @@
+body {
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.line {
+  border-top: 1px dashed rgb(230, 230, 230);
+}
+
+/* .kill::after {
+  position: relative;
+  left: 0;
+  top: -1.3rem;
+  height: 2px;
+  background: #c00;
+  content: "";
+  width: 100%;
+  display: block;
+} */
+
+.kill {
+  /* pointer-events: none; */
+  opacity: 0.3;
+  border-color: gray;
+}
+
+div.chat-window {
+  height: 300px;
+  background: rgb(231, 231, 231);
+  border: 1px solid grey;
+  position: relative;
+}
+
+div.chat-box {
+  overflow: scroll;
+  height: 65%;
+}
