@@ -45,3 +45,8 @@ div.chat-box {
 div.col-sm-9 {
   margin: auto;
 }
+
+.dead {
+  opacity: 0.3;
+  pointer-events: none;
+}

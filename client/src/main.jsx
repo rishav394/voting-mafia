@@ -151,45 +151,47 @@ class Main extends Component {
             </button>
           </>
         )}
-        {this.state.me ? (
-          this.state.users
-            .sort((a, b) => a > b)
-            .map((user) => {
-              const votedUsers = this.state.users
-                .filter((allUser) => allUser.voted === user.socketId)
-                .map((allUser) => allUser.name);
-              return (
-                <>
-                  <User
-                    me={this.state.me}
-                    key={"user+" + user.socketId}
-                    user={user}
-                    god={this.state.me.role?.trim().toUpperCase() === "GOD"}
-                    setRole={this.setRole}
-                  />
-                  {this.state.showVote && (
-                    <p
-                      key={"voted-" + user.socketId}
-                      style={{
-                        margin: "0.5rem",
-                        fontSize: 15,
-                        color: "gray",
-                        marginLeft: "20%",
-                      }}
-                    >
-                      {votedUsers.length +
-                        "/" +
-                        this.state.users.length +
-                        "  " +
-                        votedUsers.join(" , ")}
-                    </p>
-                  )}
-                </>
-              );
-            })
-        ) : (
-          <h2>Awaiting connection</h2>
-        )}
+        <div className={this.state.me?.alive === false ? "dead" : ""}>
+          {this.state.me ? (
+            this.state.users
+              .sort((a, b) => a > b)
+              .map((user) => {
+                const votedUsers = this.state.users
+                  .filter((allUser) => allUser.voted === user.socketId)
+                  .map((allUser) => allUser.name);
+                return (
+                  <>
+                    <User
+                      me={this.state.me}
+                      key={"user+" + user.socketId}
+                      user={user}
+                      god={this.state.me.role?.trim().toUpperCase() === "GOD"}
+                      setRole={this.setRole}
+                    />
+                    {this.state.showVote && (
+                      <p
+                        key={"voted-" + user.socketId}
+                        style={{
+                          margin: "0.5rem",
+                          fontSize: 15,
+                          color: "gray",
+                          marginLeft: "20%",
+                        }}
+                      >
+                        {votedUsers.length +
+                          "/" +
+                          this.state.users.length +
+                          "  " +
+                          votedUsers.join(" , ")}
+                      </p>
+                    )}
+                  </>
+                );
+              })
+          ) : (
+            <h2>Awaiting connection</h2>
+          )}
+        </div>
 
         <div
           className="row"
