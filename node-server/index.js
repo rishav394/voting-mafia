@@ -6,7 +6,7 @@ var app = express();
 app.use(cors());
 app.use(express.static("build"));
 
-var port = process.env.PORT || 80;
+var port = process.env.PORT || 9000;
 var server = app.listen(port, function () {
   console.log("listening for requests on port " + port);
 });

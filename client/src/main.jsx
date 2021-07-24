@@ -142,6 +142,9 @@ class Main extends Component {
           this.state.users
             .sort((a, b) => a > b)
             .map((user) => {
+              const votedUsers = this.state.users
+                .filter((allUser) => allUser.voted === user.socketId)
+                .map((allUser) => allUser.name);
               return (
                 <>
                   <User
@@ -161,10 +164,10 @@ class Main extends Component {
                         marginLeft: "20%",
                       }}
                     >
-                      {this.state.users
-                        .filter((allUser) => allUser.voted === user.socketId)
-                        .map((allUser) => allUser.name)
-                        .join(",")}
+                      {votedUsers.length +
+                        "/" +
+                        this.state.users.length +
+                        votedUsers.join(" , ")}
                     </p>
                   )}
                 </>
