@@ -1,5 +1,6 @@
-var express = require("express");
-var cors = require("cors");
+import cors from "cors";
+import express from "express";
+import { Server } from "socket.io";
 
 var app = express();
 
@@ -11,9 +12,15 @@ var server = app.listen(port, function () {
   console.log("listening for requests on port " + port);
 });
 
-let online = [];
+let players: {
+  socketId: string;
+  name: string;
+  role: string | undefined;
+  voted: string | undefined;
+  alive: boolean;
+}[] = [];
 
-const io = require("socket.io")(server, {
+const io = new Server(server, {
   cors: {
     origin: "*",
   },
@@ -24,68 +31,64 @@ io.sockets.on("connection", (socket) => {
 
   // Handle user disconnect event
   socket.on("disconnect", function () {
-    var entry = online.find(function (element) {
-      return String(element.socketId) === socket.id;
-    });
-
     // console.log(socket.id + " Got disconnected!");
 
-    online = online.filter(function (x) {
+    players = players.filter(function (x) {
       return x.socketId !== socket.id;
     });
-    online.forEach((o) => {
+    players.forEach((o) => {
       if (o.voted === socket.id) {
         o.voted === undefined;
       }
     });
 
-    io.sockets.emit("user-update", online);
+    io.sockets.emit("user-update", players);
   });
 
   // Handle user joined event
   socket.on("user-joined", function (data) {
     const role = data.handle.toUpperCase() === "GOD" ? "god" : undefined;
-    online.push({
+    players.push({
       socketId: socket.id,
       name: data.handle,
       role,
       voted: undefined,
       alive: true,
     });
-    io.sockets.emit("user-update", online);
+    io.sockets.emit("user-update", players);
   });
 
   socket.on("user-update", function (data) {
-    let index = online.findIndex((x) => x.socketId === data.socketId);
-    online[index] = { ...online[index], ...data };
-    io.sockets.emit("user-update", online);
+    let index = players.findIndex((x) => x.socketId === data.socketId);
+    players[index] = { ...players[index], ...data };
+    io.sockets.emit("user-update", players);
 
-    const votedGuys = online.filter((o) => {
+    const votedGuys = players.filter((o) => {
       return o.role === "god" || o.voted !== undefined || o.alive !== true;
     }).length;
-    if (votedGuys === online.length) {
+    if (votedGuys === players.length) {
       io.sockets.emit("voting-end");
     }
   });
 
   socket.on("voting-start", () => {
-    online = online.map((x) => {
+    players = players.map((x) => {
       return {
         ...x,
         voted: undefined,
       };
     });
-    io.sockets.emit("user-update", online);
-    io.sockets.emit("voting-start", online);
+    io.sockets.emit("user-update", players);
+    io.sockets.emit("voting-start", players);
   });
 
   socket.on("voting-end", () => {
-    io.sockets.emit("voting-end", online);
+    io.sockets.emit("voting-end", players);
   });
 
   socket.on("message", ({ message, toRole }) => {
-    const from = online.find((o) => o.socketId === socket.id).name;
-    const eligible = online
+    const from = players.find((o) => o.socketId === socket.id)?.name;
+    const eligible = players
       .filter((o) => {
         return o.role === "god" || o.role === toRole;
       })

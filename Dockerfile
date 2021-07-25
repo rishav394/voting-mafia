@@ -21,7 +21,8 @@ RUN npm config set unsafe-perm true
 RUN npm install
 
 COPY node-server/ .
+RUN npm run build
 
 COPY --from=build /usr/src/client/build ./build
 
-CMD [ "node", "index.js" ]
+CMD [ "npm", "run", "prod" ]
