@@ -105,7 +105,6 @@ class Main extends Component {
           </button>
         </div>
 
-        {this.state.name && <h1>Hello {this.state.name}!</h1>}
         {this.state.me?.role && (
           <h2>
             You are{" "}
