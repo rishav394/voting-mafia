@@ -167,7 +167,7 @@ class Main extends Component {
                       god={this.state.me.role?.trim().toUpperCase() === "GOD"}
                       setRole={this.setRole}
                     />
-                    {this.state.showVote && (
+                    {this.state.showVote && user.role !== "god" && (
                       <p
                         key={"voted-" + user.socketId}
                         style={{
@@ -179,7 +179,9 @@ class Main extends Component {
                       >
                         {votedUsers.length +
                           "/" +
-                          this.state.users.length +
+                          this.state.users.filter(
+                            (u) => u.alive !== false && u.role !== "god"
+                          ).length +
                           "  " +
                           votedUsers.join(" , ")}
                       </p>

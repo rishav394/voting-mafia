@@ -68,7 +68,7 @@ export const User = ({ user, god, setRole, me }) => {
               me.voted === user.socketId ? "" : "-outline"
             }-danger btn-sm m-1`}
           >
-            Vote kick
+            Vote kill
           </button>
         </div>
       )}
