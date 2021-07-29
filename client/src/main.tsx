@@ -4,16 +4,17 @@ import { socket } from "./socket";
 import { TypeRole, TypeUser } from "./types";
 import { User } from "./User";
 
-class Main extends Component<
-  ReactCookieProps,
-  {
-    name: string | undefined;
-    users: TypeUser[];
-    me: TypeUser | undefined;
-    showVote: boolean;
-    messages: { from: string; message: string; channel: TypeRole }[];
-  }
-> {
+type Props = {
+  name: string | undefined;
+  users: TypeUser[];
+  me: TypeUser | undefined;
+  showVote: boolean;
+  messages: { from: string; message: string; channel: TypeRole }[];
+};
+
+class Main extends Component<ReactCookieProps, Props> {
+  audio: HTMLAudioElement;
+
   scrollRefs: {
     [role in Extract<
       TypeRole,
@@ -27,6 +28,7 @@ class Main extends Component<
 
   constructor(props: ReactCookieProps) {
     super(props);
+    this.audio = new Audio("/that-was-quick.mp3");
 
     const { cookies } = props;
 
@@ -81,6 +83,9 @@ class Main extends Component<
               messages: [...this.state.messages, { from, message, channel }],
             },
             () => {
+              if (from !== this.state.me?.name) {
+                this.audio.play();
+              }
               this.scrollRefs[channel].current.scrollIntoView({
                 behavior: "smooth",
               });

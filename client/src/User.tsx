@@ -61,7 +61,7 @@ export const User = (props: Props) => {
               () => {
                 updateAlive(true);
               },
-              "Save"
+              "Revive"
             )}
           </div>
         </>
