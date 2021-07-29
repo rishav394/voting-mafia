@@ -1,14 +1,25 @@
+import { TypeRole, TypeUser } from "./types";
 import { toTitleCase } from "./util";
 
-export const User = ({ user, god, setRole, me }) => {
-  const updateRole = (e) => {
+type Props = {
+  user: TypeUser;
+  god: boolean;
+  setRole: any;
+  me: TypeUser;
+};
+
+export const User = (props: Props) => {
+  const { user, god, setRole, me } = props;
+
+  const updateRole: React.MouseEventHandler<HTMLButtonElement> = (e) => {
     setRole({
       socketId: user.socketId,
+      // @ts-ignore
       role: e.target.innerHTML,
     });
   };
 
-  const updateAlive = (alive) => {
+  const updateAlive = (alive: boolean) => {
     setRole({
       socketId: user.socketId,
       alive,
@@ -76,14 +87,19 @@ export const User = ({ user, god, setRole, me }) => {
   );
 };
 
-const roleButtonMapping = {
+const roleButtonMapping: { [role in TypeRole]: string } = {
   Mafia: "danger",
   Healer: "success",
   Detective: "info",
   Citizen: "primary",
+  god: "warning",
 };
 
-const KillerButton = (role, onClick, text) => (
+const KillerButton = (
+  role: TypeRole,
+  onClick: React.MouseEventHandler<HTMLButtonElement>,
+  text: string
+) => (
   <button
     onClick={onClick}
     className={`btn btn-outline-${roleButtonMapping[role]} btn-sm m-1`}
@@ -92,13 +108,17 @@ const KillerButton = (role, onClick, text) => (
   </button>
 );
 
-const RoleButton = (role, onClick, user, text) => (
+const RoleButton = (
+  role: TypeRole,
+  onClick: React.MouseEventHandler<HTMLButtonElement>,
+  user: TypeUser
+) => (
   <button
     onClick={onClick}
     className={`btn btn${user.role === role ? "" : "-outline"}-${
       roleButtonMapping[role]
     } btn-sm m-1`}
   >
-    {text || role}
+    {role}
   </button>
 );

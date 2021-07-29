@@ -1,21 +1,37 @@
-import { Component, createRef } from "react";
-import { withCookies } from "react-cookie";
+import { Component, createRef, RefObject } from "react";
+import { ReactCookieProps, withCookies } from "react-cookie";
 import { socket } from "./socket";
+import { TypeRole, TypeUser } from "./types";
 import { User } from "./User";
 
-class Main extends Component {
-  scrollRefs = {
+class Main extends Component<
+  ReactCookieProps,
+  {
+    name: string | undefined;
+    users: TypeUser[];
+    me: TypeUser | undefined;
+    showVote: boolean;
+    messages: { from: string; message: string; channel: TypeRole }[];
+  }
+> {
+  scrollRefs: {
+    [role in Extract<
+      TypeRole,
+      "Mafia" | "Healer" | "Detective"
+    >]: RefObject<any>;
+  } = {
     Mafia: createRef(),
     Healer: createRef(),
     Detective: createRef(),
   };
 
-  constructor(props) {
+  constructor(props: ReactCookieProps) {
     super(props);
 
     const { cookies } = props;
+
     this.state = {
-      name: cookies.get("name") || undefined,
+      name: cookies?.get("name") || undefined,
       users: [],
       me: undefined,
       showVote: false,
@@ -24,7 +40,7 @@ class Main extends Component {
   }
 
   componentDidMount() {
-    socket.on("user-update", (data) => {
+    socket.on("user-update", (data: TypeUser[]) => {
       this.setState({
         users: data,
         me: data.find((x) => x.socketId === socket.id),
@@ -43,26 +59,39 @@ class Main extends Component {
       });
     });
 
-    socket.on("message", ({ forSockets, message, from, channel }) => {
-      if (
-        this.state.me?.socketId &&
-        forSockets.includes(this.state.me.socketId)
-      ) {
-        this.setState(
-          {
-            messages: [...this.state.messages, { from, message, channel }],
-          },
-          () => {
-            this.scrollRefs[channel].current.scrollIntoView({
-              behavior: "smooth",
-            });
-          }
-        );
+    socket.on(
+      "message",
+      ({
+        forSockets,
+        message,
+        from,
+        channel,
+      }: {
+        forSockets: string[];
+        message: string;
+        from: string;
+        channel: Extract<TypeRole, "Mafia" | "Healer" | "Detective">;
+      }) => {
+        if (
+          this.state.me?.socketId &&
+          forSockets.includes(this.state.me.socketId)
+        ) {
+          this.setState(
+            {
+              messages: [...this.state.messages, { from, message, channel }],
+            },
+            () => {
+              this.scrollRefs[channel].current.scrollIntoView({
+                behavior: "smooth",
+              });
+            }
+          );
+        }
       }
-    });
+    );
   }
 
-  setRole(update) {
+  setRole(update: TypeUser[]) {
     socket.emit("user-update", update);
   }
 
@@ -81,7 +110,7 @@ class Main extends Component {
             onKeyPress={(e) => {
               if (e.key === "Enter") {
                 if (this.state.name) {
-                  this.props.cookies.set("name", this.state.name);
+                  this.props.cookies?.set("name", this.state.name);
                   socket.disconnect();
                   socket.connect();
                   socket.emit("user-joined", { handle: this.state.name });
@@ -94,7 +123,7 @@ class Main extends Component {
             className="btn btn-primary"
             onClick={() => {
               if (this.state.name) {
-                this.props.cookies.set("name", this.state.name);
+                this.props.cookies?.set("name", this.state.name);
                 socket.disconnect();
                 socket.connect();
                 socket.emit("user-joined", { handle: this.state.name });
@@ -153,7 +182,7 @@ class Main extends Component {
         <div className={this.state.me?.alive === false ? "dead" : ""}>
           {this.state.me ? (
             this.state.users
-              .sort((a, b) => a > b)
+              .sort((a: TypeUser, b: TypeUser) => a.name.localeCompare(b.name))
               .map((user) => {
                 const votedUsers = this.state.users
                   .filter((allUser) => allUser.voted === user.socketId)
@@ -161,10 +190,10 @@ class Main extends Component {
                 return (
                   <>
                     <User
-                      me={this.state.me}
+                      me={this.state.me!}
                       key={"user+" + user.socketId}
                       user={user}
-                      god={this.state.me.role?.trim().toUpperCase() === "GOD"}
+                      god={this.state.me!.role?.trim() === "god"}
                       setRole={this.setRole}
                     />
                     {this.state.showVote && user.role !== "god" && (
@@ -200,7 +229,10 @@ class Main extends Component {
             marginTop: "2rem",
           }}
         >
-          {["Mafia", "Healer", "Detective"].map((toRole) => {
+          {(["Mafia", "Healer", "Detective"] as Extract<
+            TypeRole,
+            "Mafia" | "Healer" | "Detective"
+          >[]).map((toRole) => {
             if (
               this.state.me?.role === toRole ||
               this.state.me?.role === "god"
@@ -221,6 +253,7 @@ class Main extends Component {
                             <p key={index} style={{ margin: 0 }}>
                               <span
                                 style={{
+                                  // @ts-ignore
                                   fontWeight: "800",
                                 }}
                               >
@@ -228,6 +261,7 @@ class Main extends Component {
                               </span>
                               <span
                                 style={{
+                                  // @ts-ignore
                                   fontWeight: "100",
                                 }}
                               >
@@ -251,13 +285,13 @@ class Main extends Component {
                       type="text"
                       onKeyPress={(e) => {
                         if (e.key === "Enter") {
-                          const msg = e.target.value;
+                          const msg = (e.target as any).value;
                           if (msg) {
                             socket.emit("message", {
                               message: msg,
                               toRole: toRole,
                             });
-                            e.target.value = "";
+                            (e.target as any).value = "";
                           }
                         }
                       }}
