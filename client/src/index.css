@@ -50,3 +50,13 @@ div.col-sm-9 {
   opacity: 0.3;
   pointer-events: none;
 }
+
+.form-switch div {
+  min-width: 80px;
+  margin: auto;
+}
+
+.form-switch input {
+  margin: auto;
+  padding-bottom: 17px;
+}

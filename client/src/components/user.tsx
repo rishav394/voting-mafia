@@ -1,5 +1,5 @@
-import { TypeRole, TypeUser } from "./types";
-import { toTitleCase } from "./util";
+import { TypeRole, TypeUser } from "../types";
+import { toTitleCase } from "../util";
 
 type Props = {
   user: TypeUser;

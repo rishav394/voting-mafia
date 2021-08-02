@@ -1,8 +1,9 @@
 import { Component, createRef, RefObject } from "react";
 import { ReactCookieProps, withCookies } from "react-cookie";
+import { TopHeader } from "./components/header";
+import { User } from "./components/user";
 import { socket } from "./socket";
 import { TypeRole, TypeUser } from "./types";
-import { User } from "./User";
 
 type Props = {
   name: string | undefined;
@@ -103,41 +104,20 @@ class Main extends Component<ReactCookieProps, Props> {
   render() {
     return (
       <div>
-        <div className="d-flex flex-row">
-          <input
-            className="form-control"
-            value={this.state.name}
-            onChange={(e) => {
-              this.setState({
-                name: e.target.value,
-              });
-            }}
-            onKeyPress={(e) => {
-              if (e.key === "Enter") {
-                if (this.state.name) {
-                  this.props.cookies?.set("name", this.state.name);
-                  socket.disconnect();
-                  socket.connect();
-                  socket.emit("user-joined", { handle: this.state.name });
-                }
-              }
-            }}
-          />
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={() => {
-              if (this.state.name) {
-                this.props.cookies?.set("name", this.state.name);
-                socket.disconnect();
-                socket.connect();
-                socket.emit("user-joined", { handle: this.state.name });
-              }
-            }}
-          >
-            Connect
-          </button>
-        </div>
+        <TopHeader
+          name={this.state.name}
+          onNameChange={(e) => {
+            this.setState({
+              name: e.target.value,
+            });
+          }}
+          onClickConnect={() => {
+            this.props.cookies?.set("name", this.state.name);
+            socket.disconnect();
+            socket.connect();
+            socket.emit("user-joined", { handle: this.state.name });
+          }}
+        />
 
         {this.state.me?.role && (
           <h2>
