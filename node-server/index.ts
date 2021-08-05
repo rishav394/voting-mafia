@@ -48,6 +48,14 @@ io.sockets.on("connection", (socket) => {
   // Handle user joined event
   socket.on("user-joined", function (data) {
     const role = data.handle.toUpperCase() === "GOD" ? "god" : undefined;
+
+    if (role === "god") {
+      if (!!players.find((player) => player.role === "god")) {
+        io.sockets.emit("user-update", players);
+        return;
+      }
+    }
+
     players.push({
       socketId: socket.id,
       name: data.handle,
