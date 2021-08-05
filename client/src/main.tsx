@@ -105,6 +105,7 @@ class Main extends Component<ReactCookieProps, Props> {
     return (
       <div>
         <TopHeader
+          cookies={this.props.cookies}
           name={this.state.name}
           onNameChange={(e) => {
             this.setState({
