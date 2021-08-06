@@ -69,6 +69,13 @@ io.sockets.on("connection", (socket) => {
   socket.on("user-update", function (data) {
     let index = players.findIndex((x) => x.socketId === data.socketId);
     players[index] = { ...players[index], ...data };
+
+    players.forEach((player) => {
+      if (player.alive !== true) {
+        player.voted = undefined;
+      }
+    });
+
     io.sockets.emit("user-update", players);
 
     const votedGuys = players.filter((o) => {
