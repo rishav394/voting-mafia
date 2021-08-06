@@ -219,15 +219,12 @@ class Main extends Component<ReactCookieProps, Props> {
             TypeRole,
             "Mafia" | "Healer" | "Detective"
           >[]).map((toRole) => {
-            if (
-              this.state.me?.role === toRole ||
-              this.state.me?.role === "god"
-            ) {
+            const spectating =
+              this.state.me?.role === "god" || this.state.me?.alive === false;
+            if (this.state.me?.role === toRole || spectating) {
               return (
                 <div
-                  className={`chat-window ${
-                    this.state.me?.role === "god" ? "col-4" : "col-sm-9"
-                  }`}
+                  className={`chat-window ${spectating ? "col-4" : "col-sm-9"}`}
                   key={toRole}
                 >
                   <h4>{toRole}</h4>
