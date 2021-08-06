@@ -153,7 +153,7 @@ class Main extends Component<ReactCookieProps, Props> {
               }}
               className={`btn btn-warning btn-sm m-1`}
             >
-              Start/Reset voting
+              Reset voting
             </button>
             <button
               onClick={() => {
@@ -161,7 +161,7 @@ class Main extends Component<ReactCookieProps, Props> {
               }}
               className={`btn btn-danger btn-sm m-1`}
             >
-              End voting
+              Force end voting
             </button>
           </>
         )}
