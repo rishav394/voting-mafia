@@ -5,15 +5,16 @@ import { User } from "./components/user";
 import { socket } from "./socket";
 import { TypeRole, TypeUser } from "./types";
 
-type Props = {
+type State = {
   name: string | undefined;
   users: TypeUser[];
   me: TypeUser | undefined;
   showVote: boolean;
   messages: { from: string; message: string; channel: TypeRole }[];
+  disableConnection: boolean;
 };
 
-class Main extends Component<ReactCookieProps, Props> {
+class Main extends Component<ReactCookieProps, State> {
   audio: HTMLAudioElement;
 
   scrollRefs: {
@@ -39,6 +40,7 @@ class Main extends Component<ReactCookieProps, Props> {
       me: undefined,
       showVote: false,
       messages: [],
+      disableConnection: false,
     };
   }
 
@@ -113,10 +115,20 @@ class Main extends Component<ReactCookieProps, Props> {
             });
           }}
           onClickConnect={() => {
-            this.props.cookies?.set("name", this.state.name);
-            socket.disconnect();
-            socket.connect();
-            socket.emit("user-joined", { handle: this.state.name });
+            if (this.state.disableConnection === false) {
+              this.setState(
+                {
+                  disableConnection: true,
+                },
+                () => {
+                  this.props.cookies?.set("name", this.state.name);
+                  socket.disconnect();
+                  socket.connect();
+                  socket.emit("user-joined", { handle: this.state.name });
+                  this.setState({ disableConnection: false });
+                }
+              );
+            }
           }}
         />
 
