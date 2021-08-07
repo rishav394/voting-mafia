@@ -39,7 +39,7 @@ export const User = (props: Props) => {
     >
       <p className="col-md-2" style={{ margin: "0.5rem" }}>
         {`${toTitleCase(user.name)}`}{" "}
-        {god && user.voted !== undefined && (
+        {user.voted !== undefined && (
           <span
             style={{
               color: "green",
