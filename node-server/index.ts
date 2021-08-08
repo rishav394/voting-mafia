@@ -63,26 +63,33 @@ io.sockets.on("connection", (socket) => {
       voted: undefined,
       alive: true,
     });
+
+    players = [
+      ...new Map(players.map((player) => [player.socketId, player])).values(),
+    ];
+
     io.sockets.emit("user-update", players);
   });
 
   socket.on("user-update", function (data) {
     let index = players.findIndex((x) => x.socketId === data.socketId);
-    players[index] = { ...players[index], ...data };
+    if (index !== -1) {
+      players[index] = { ...players[index], ...data };
 
-    players.forEach((player) => {
-      if (player.alive !== true) {
-        player.voted = undefined;
+      players.forEach((player) => {
+        if (player.alive !== true) {
+          player.voted = undefined;
+        }
+      });
+
+      io.sockets.emit("user-update", players);
+
+      const votedGuys = players.filter((o) => {
+        return o.role === "god" || o.voted !== undefined || o.alive !== true;
+      }).length;
+      if (votedGuys === players.length) {
+        io.sockets.emit("voting-end");
       }
-    });
-
-    io.sockets.emit("user-update", players);
-
-    const votedGuys = players.filter((o) => {
-      return o.role === "god" || o.voted !== undefined || o.alive !== true;
-    }).length;
-    if (votedGuys === players.length) {
-      io.sockets.emit("voting-end");
     }
   });
 
