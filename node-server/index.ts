@@ -112,7 +112,7 @@ io.sockets.on("connection", (socket) => {
     const from = players.find((o) => o.socketId === socket.id)?.name;
     const eligible = players
       .filter((o) => {
-        return o.role === "god" || o.role === toRole;
+        return o.role === "god" || o.role === toRole || o.alive === false;
       })
       .map((o) => o.socketId);
     io.sockets.emit("message", {
