@@ -87,7 +87,7 @@ class Main extends Component<ReactCookieProps, State> {
             },
             () => {
               if (from !== this.state.me?.name) {
-                this.audio.play();
+                // this.audio.play();
               }
               this.scrollRefs[channel].current.scrollIntoView({
                 behavior: "smooth",
@@ -227,10 +227,12 @@ class Main extends Component<ReactCookieProps, State> {
             marginTop: "2rem",
           }}
         >
-          {(["Mafia", "Healer", "Detective"] as Extract<
-            TypeRole,
-            "Mafia" | "Healer" | "Detective"
-          >[]).map((toRole) => {
+          {(
+            ["Mafia", "Healer", "Detective"] as Extract<
+              TypeRole,
+              "Mafia" | "Healer" | "Detective"
+            >[]
+          ).map((toRole) => {
             const spectating =
               this.state.me?.role === "god" || this.state.me?.alive === false;
             if (this.state.me?.role === toRole || spectating) {
