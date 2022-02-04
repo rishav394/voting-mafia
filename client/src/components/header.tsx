@@ -11,7 +11,7 @@ type Props = {
 export const TopHeader = (props: Props) => {
   const html = document.querySelector("html");
   const [isDarkMode, setDarkMode] = useState<boolean>(
-    props.cookies?.get("dark-mode") === "true"
+    props.cookies?.get("dark-mode") !== "false"
   );
 
   useEffect(() => {
