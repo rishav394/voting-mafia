@@ -6,6 +6,7 @@ type Props = {
   god: boolean;
   setRole: any;
   me: TypeUser;
+  showVote: boolean;
 };
 
 export const User = (props: Props) => {
@@ -84,6 +85,7 @@ export const User = (props: Props) => {
                 voted: user.socketId,
               });
             }}
+            disabled={props.showVote}
             className={`btn btn${
               me.voted === user.socketId ? "" : "-outline"
             }-danger btn-sm m-1`}

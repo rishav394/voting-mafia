@@ -111,7 +111,7 @@ class Main extends Component<ReactCookieProps, State> {
           name={this.state.name}
           onNameChange={(e) => {
             this.setState({
-              name: e.target.value,
+              name: e.target.value.trimStart().replace("  ", " "),
             });
           }}
           onClickConnect={() => {
@@ -132,7 +132,7 @@ class Main extends Component<ReactCookieProps, State> {
           }}
         />
 
-        {this.state.me?.role && (
+        {this.state.me?.role ? (
           <h2>
             You are{" "}
             <span
@@ -156,6 +156,8 @@ class Main extends Component<ReactCookieProps, State> {
               </span>
             )}
           </h2>
+        ) : (
+          this.state.me && <h2>Even god doesn't know who you are :sadblob:</h2>
         )}
         {this.state.me?.role === "god" && (
           <>
@@ -193,6 +195,7 @@ class Main extends Component<ReactCookieProps, State> {
                       user={user}
                       god={this.state.me!.role?.trim() === "god"}
                       setRole={this.setRole}
+                      showVote={this.state.showVote}
                     />
                     {this.state.showVote && user.role !== "god" && (
                       <p
@@ -217,7 +220,7 @@ class Main extends Component<ReactCookieProps, State> {
                 );
               })
           ) : (
-            <h2>Awaiting connection</h2>
+            <h2>Please connect to play!</h2>
           )}
         </div>
 
