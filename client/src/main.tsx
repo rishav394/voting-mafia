@@ -181,44 +181,48 @@ class Main extends Component<ReactCookieProps, State> {
         )}
         <div className={this.state.me?.alive === false ? "dead" : ""}>
           {this.state.me ? (
-            this.state.users
-              .sort((a: TypeUser, b: TypeUser) => a.name.localeCompare(b.name))
-              .map((user) => {
-                const votedUsers = this.state.users
-                  .filter((allUser) => allUser.voted === user.socketId)
-                  .map((allUser) => allUser.name);
-                return (
-                  <>
-                    <User
-                      me={this.state.me!}
-                      key={"user+" + user.socketId}
-                      user={user}
-                      god={this.state.me!.role?.trim() === "god"}
-                      setRole={this.setRole}
-                      showVote={this.state.showVote}
-                    />
-                    {this.state.showVote && user.role !== "god" && (
-                      <p
-                        key={"voted-" + user.socketId}
-                        style={{
-                          margin: "0.5rem",
-                          fontSize: 15,
-                          color: "gray",
-                          marginLeft: "20%",
-                        }}
-                      >
-                        {votedUsers.length +
-                          "/" +
-                          this.state.users.filter(
-                            (u) => u.alive !== false && u.role !== "god"
-                          ).length +
-                          "  " +
-                          votedUsers.join(" , ")}
-                      </p>
-                    )}
-                  </>
-                );
-              })
+            this.state.me.role ? (
+              this.state.users
+                .sort((a: TypeUser, b: TypeUser) =>
+                  a.name.localeCompare(b.name)
+                )
+                .map((user) => {
+                  const votedUsers = this.state.users
+                    .filter((allUser) => allUser.voted === user.socketId)
+                    .map((allUser) => allUser.name);
+                  return (
+                    <>
+                      <User
+                        me={this.state.me!}
+                        key={"user+" + user.socketId}
+                        user={user}
+                        god={this.state.me!.role?.trim() === "god"}
+                        setRole={this.setRole}
+                        showVote={this.state.showVote}
+                      />
+                      {this.state.showVote && user.role !== "god" && (
+                        <p
+                          key={"voted-" + user.socketId}
+                          style={{
+                            margin: "0.5rem",
+                            fontSize: 15,
+                            color: "gray",
+                            marginLeft: "20%",
+                          }}
+                        >
+                          {votedUsers.length +
+                            "/" +
+                            this.state.users.filter(
+                              (u) => u.alive !== false && u.role !== "god"
+                            ).length +
+                            "  " +
+                            votedUsers.join(" , ")}
+                        </p>
+                      )}
+                    </>
+                  );
+                })
+            ) : null
           ) : (
             <h2>Please connect to play!</h2>
           )}
